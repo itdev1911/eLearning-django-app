@@ -1,0 +1,26 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center my-4">Мои курсы</h2>
+    
+    {% if enrolled_courses %}
+        <div class="courses-grid">
+            {% for course in enrolled_courses %}
+                <div class="course-card">
+                    <h3>{{ course.title }}</h3>
+                    <p>{{ course.description|truncatechars:100 }}</p>
+                    <a href="{% url 'course_detail' course.id %}" class="btn-primary">Подробнее</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert text-center">
+            <p>Вы пока не записаны ни на один курс.</p>
+            <p><a href="{% url 'all_courses' %}">Посмотреть все доступные курсы</a></p>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

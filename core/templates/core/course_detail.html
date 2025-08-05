@@ -1,0 +1,41 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title text-center">{{ course.title }}</h2>
+            <p class="card-text text-muted text-center mb-4">Преподаватель: {{ course.teacher.username }}</p>
+
+            <h3 class="mt-4">Описание курса</h3>
+            <p>{{ course.description }}</p>
+
+            <h3 class="mt-4">Материалы курса</h3>
+            {% if materials %}
+                <ul class="list-group">
+                    {% for material in materials %}
+                        <li class="list-group-item">
+                            <a href="{{ material.file.url }}" target="_blank">{{ material.title }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Материалы для этого курса еще не добавлены.</p>
+            {% endif %}
+
+            <div class="mt-4">
+                {% if user.is_authenticated and user.is_student %}
+                    <form method="post" action="{% url 'enroll_course' course.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-primary">Записаться на курс</button>
+                    </form>
+                {% elif user.is_authenticated and user.is_teacher and user == course.teacher %}
+                    <a href="{% url 'manage_course' course.id %}" class="btn-primary">Управление курсом</a>
+                {% endif %}
+                <a href="{% url 'chat_room' course.id %}" class="btn-primary">Перейти на чат</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

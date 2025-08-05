@@ -1,0 +1,14 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title text-center">Управление курсом: {{ course.title }}</h2>
+            <p class="card-text text-muted text-center mb-4">Преподаватель: {{ course.teacher.username }}</p>
+            
+            </div>
+    </div>
+</div>
+{% endblock %}

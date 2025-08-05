@@ -1,0 +1,26 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center my-4">Курсы, которые я веду</h2>
+    
+    {% if teaching_courses %}
+        <div class="courses-grid">
+            {% for course in teaching_courses %}
+                <div class="course-card">
+                    <h3>{{ course.title }}</h3>
+                    <p>{{ course.description|truncatechars:100 }}</p>
+                    <a href="{% url 'course_detail' course.id %}" class="btn-primary">Управление курсом</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert text-center">
+            <p>Вы еще не создали ни одного курса.</p>
+            <p><a href="{% url 'create_course' %}" class="btn-primary">Создать свой первый курс</a></p>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}

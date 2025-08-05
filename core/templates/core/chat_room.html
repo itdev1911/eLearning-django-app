@@ -1,0 +1,92 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="chat-container">
+        <h2>Чат для курса "{{ course.title }}"</h2>
+        <div id="chat-log">
+            </div>
+        <div class="chat-input-area">
+            <input type="text" id="chat-message-input" class="form-control">
+            <button id="chat-message-submit" class="btn btn-primary">Отправить</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Весь код запускается только после полной загрузки HTML-документа
+    document.addEventListener('DOMContentLoaded', function() {
+        const roomName = "{{ course.id }}";
+        const chatLog = document.getElementById('chat-log');
+        const messageInputDom = document.getElementById('chat-message-input');
+        const messageSubmitBtn = document.getElementById('chat-message-submit');
+
+        console.log("Attempting to connect to WebSocket...");
+
+        // Явно указываем хост и порт для WebSocket-соединения
+        const chatSocket = new WebSocket(
+            'ws://' + window.location.hostname + ':8001' + '/ws/chat/' + roomName + '/'
+        );
+        
+        // Логируем успешное открытие соединения
+        chatSocket.onopen = function(e) {
+            console.log("WebSocket connection opened successfully.");
+        };
+
+        // Обработка входящих сообщений от сервера
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            const message = data.message;
+            
+            const p = document.createElement('p');
+            p.textContent = message;
+            chatLog.appendChild(p);
+
+            console.log("Message received from server: " + message);
+        };
+
+        // Логирование закрытия соединения
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+        // Логирование ошибок соединения
+        chatSocket.onerror = function(e) {
+            console.error('WebSocket error occurred:', e);
+        };
+
+        // Обработка нажатия клавиши Enter
+        if (messageInputDom) {
+            messageInputDom.focus();
+            messageInputDom.onkeyup = function(e) {
+                if (e.key === 'Enter') {
+                    messageSubmitBtn.click();
+                }
+            };
+        }
+
+        // Обработка нажатия кнопки "Отправить"
+        if (messageSubmitBtn) {
+            messageSubmitBtn.onclick = function(e) {
+                const message = messageInputDom.value;
+
+                if (message.trim() !== '') {
+                    // Проверяем, что соединение открыто (readyState === 1) перед отправкой
+                    if (chatSocket.readyState === WebSocket.OPEN) {
+                        chatSocket.send(JSON.stringify({
+                            'message': message
+                        }));
+                        console.log("Message sent: " + message);
+                        messageInputDom.value = '';
+                    } else {
+                        console.error("WebSocket is not open. ReadyState:", chatSocket.readyState);
+                        console.error("Message was not sent.");
+                    }
+                }
+            };
+        }
+    });
+</script>
+{% endblock %}

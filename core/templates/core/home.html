@@ -1,0 +1,55 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    {% if user.is_authenticated %}
+        <div class="text-center">
+            <h1 class="display-4">Добро пожаловать, {{ user.username }}!</h1>
+            <p class="lead">Мы рады вас видеть в нашей системе.</p>
+        </div>
+
+        <div class="row my-5">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h2 class="card-title">Ваши курсы</h2>
+                        {% if user.is_student %}
+                            <p>Здесь будет отображаться список курсов, на которые вы записаны.</p>
+                            <a href="{% url 'student_dashboard' %}" class="btn-primary">Перейти к курсам</a>
+                        {% elif user.is_teacher %}
+                            <p>Здесь будет отображаться список курсов, которые вы ведете.</p>
+                            <a href="{% url 'teacher_dashboard' %}" class="btn-primary">Перейти к курсам</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h2 class="card-title">Обновления</h2>
+                        <p>Здесь будут отображаться уведомления и последние новости.</p>
+                        <div id="notifications-container">
+                            <div class="alert alert-info">
+                                <p>Нет новых уведомлений.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% else %}
+        <div class="jumbotron text-center">
+            <h1 class="display-4">Добро пожаловать в eLearning!</h1>
+            <p class="lead">Ваша платформа для онлайн-обучения.</p>
+            <hr class="my-4">
+            <p>Войдите, чтобы получить доступ к вашим курсам или зарегистрируйтесь, чтобы начать.</p>
+            <a href="{% url 'login' %}" class="btn-primary">Войти</a>
+            <a href="{% url 'student_signup' %}" class="btn-primary ml-2">Регистрация</a>
+        </div>
+    {% endif %}
+</div>
+
+<script src="{% static 'core/js/main.js' %}"></script>
+{% endblock %}
