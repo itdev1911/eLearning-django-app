@@ -43,7 +43,8 @@ SECRET_KEY = 'django-insecure-6!)19$7z^_^tsfqu_e=nl0=o)@ob&5vbga3kf@5@+0)clsu6-&
 # Настройки DEBUG и ALLOWED_HOSTS теперь управляются переменными окружения.
 DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'elearning-django-app.onrender.com,localhost,127.0.0.1').split(',')
+
 
 AUTH_USER_MODEL = 'core.User'
 
