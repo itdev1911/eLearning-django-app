@@ -3,12 +3,57 @@
 
 {% block content %}
 <div class="container my-5">
-    <div class="card">
+    <div class="card p-4 mb-4">
         <div class="card-body">
             <h2 class="card-title text-center">Управление курсом: {{ course.title }}</h2>
             <p class="card-text text-muted text-center mb-4">Преподаватель: {{ course.teacher.username }}</p>
-            
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card p-4 mb-4">
+                <h3 class="mb-3">Записанные студенты:</h3>
+                {% if enrolled_students %}
+                    <ul class="list-group list-group-flush">
+                        {% for student in enrolled_students %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ student.username }}
+                                <a href="{% url 'remove_student' course.id student.id %}" class="btn btn-danger btn-sm">Удалить</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted">На этот курс еще не записался ни один студент.</p>
+                {% endif %}
             </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card p-4 mb-4">
+                <h3 class="mb-3">Добавить новый материал:</h3>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary mt-3">Загрузить материал</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card p-4 mb-4">
+        <h3 class="mb-3">Материалы курса:</h3>
+        {% if materials %}
+            <ul class="list-group list-group-flush">
+                {% for material in materials %}
+                    <li class="list-group-item">
+                        <a href="{{ material.file.url }}">{{ material.title }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">Пока нет материалов.</p>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

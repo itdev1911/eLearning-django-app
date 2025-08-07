@@ -49,6 +49,23 @@
             <a href="{% url 'student_signup' %}" class="btn-primary ml-2">Регистрация</a>
         </div>
     {% endif %}
+
+    {% if user.is_authenticated %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Опубликовать</button>
+    </form>
+{% endif %}
+
+<h3>Последние обновления:</h3>
+<ul>
+    {% for update in status_updates %}
+        <li><strong>{{ update.user.username }}:</strong> {{ update.content }} ({{ update.created_at|date:"d M Y H:i" }})</li>
+    {% empty %}
+        <li>Пока нет обновлений.</li>
+    {% endfor %}
+</ul>
 </div>
 
 <script src="{% static 'core/js/main.js' %}"></script>

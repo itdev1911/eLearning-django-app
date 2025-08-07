@@ -1,4 +1,4 @@
-# eLearning/routing.py
+
 from django.urls import path
 from core.consumers import ChatConsumer
 

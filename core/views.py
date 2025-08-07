@@ -32,10 +32,25 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-from .forms import StudentSignUpForm, TeacherSignUpForm, CourseForm
+from .forms import StudentSignUpForm, TeacherSignUpForm, CourseForm, StatusUpdateForm 
+from .forms import MaterialForm
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Course, Notification, Material 
 
 def home(request):
-    return render(request, 'core/home.html')
+    status_updates = StatusUpdate.objects.all().order_by('-created_at')
+    form = StatusUpdateForm()
+    if request.method == 'POST' and request.user.is_authenticated:
+        form = StatusUpdateForm(request.POST)
+        if form.is_valid():
+            new_update = form.save(commit=False)
+            new_update.user = request.user
+            new_update.save()
+            return redirect('home')
+    return render(request, 'core/home.html', {
+        'status_updates': status_updates,
+        'form': form
+    })
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -159,40 +174,51 @@ def profile(request):
 
 @login_required
 def student_dashboard(request):
-    if not request.user.is_student:
-        return redirect('home')
-
     enrolled_courses = request.user.enrolled_courses.all()
-    
-    return render(request, 'core/student_dashboard.html', {'enrolled_courses': enrolled_courses})
+    notifications = request.user.notifications.filter(is_read=False).order_by('-created_at')[:5]
+ 
+    return render(request, 'core/student_dashboard.html', {
+        'enrolled_courses': enrolled_courses,
+        'notifications': notifications,
+    })
 
 @login_required
 def teacher_dashboard(request):
     if not request.user.is_teacher:
         return redirect('home')
 
-    # Получаем все курсы, где текущий пользователь является преподавателем
+   
     teaching_courses = Course.objects.filter(teacher=request.user)
     
     return render(request, 'core/teacher_dashboard.html', {'teaching_courses': teaching_courses})
 
 @login_required
 def all_courses(request):
-    # Получаем все курсы, кроме тех, на которые уже записан текущий пользователь
+    
     all_courses = Course.objects.exclude(enrolled_students=request.user)
 
     return render(request, 'core/all_courses.html', {'available_courses': all_courses})
 
 @login_required
 def enroll_course(request, course_id):
-    course = get_object_or_404(Course, pk=course_id)
-    if request.user.is_student:
-        request.user.enrolled_courses.add(course)
+    """
+    Позволяет студенту записаться на курс и отправляет уведомление преподавателю.
+    """
+    course = get_object_or_404(Course, id=course_id)
+
+    if not request.user.is_student:
+        return redirect('course_detail', course_id=course.id) # Перенаправляем, если это не студент
+
+    course.enrolled_students.add(request.user)
+
+    message = f"Студент {request.user.username} записался на ваш курс '{course.title}'."
+    Notification.objects.create(user=course.teacher, message=message)
+
     return redirect('student_dashboard')
 
 @login_required
 def create_course(request):
-    # Убедимся, что только преподаватель может создавать курсы
+    
     if not request.user.is_teacher:
         return redirect('home')
 
@@ -203,19 +229,18 @@ def create_course(request):
             course.teacher = request.user
             course.save()
             return redirect('teacher_dashboard')
-        # Если форма невалидна, мы просто продолжаем, и Python
-        # передаст форму с ошибками в render()
+       
     else:
-        # Если это GET-запрос, создаем пустую форму
+        
         form = CourseForm()
         
     return render(request, 'core/create_course.html', {'form': form})
 
 def course_detail(request, course_id):
-    # Пытаемся найти курс по его ID, если не находим - возвращаем 404
+   
     course = get_object_or_404(Course, pk=course_id)
     
-    # Получаем все материалы, связанные с этим курсом
+    
     materials = Material.objects.filter(course=course)
 
     context = {
@@ -228,19 +253,30 @@ def course_detail(request, course_id):
 
 @login_required
 def manage_course(request, course_id):
-    # Пытаемся найти курс по его ID
-    course = get_object_or_404(Course, pk=course_id)
+    course = get_object_or_404(Course, id=course_id)
+    # Проверка, что текущий пользователь - преподаватель и создатель курса
+    if not request.user.is_teacher or course.teacher != request.user:
+        return redirect('course_detail', course_id=course.id)
 
-    # Проверяем, является ли текущий пользователь преподавателем этого курса
-    if request.user != course.teacher:
-        return redirect('home') # Или куда-либо еще, если доступ запрещен
+    materials = course.materials.all()
+    enrolled_students = course.enrolled_students.all()
 
-    context = {
+    if request.method == 'POST':
+        form = MaterialForm(request.POST, request.FILES)
+        if form.is_valid():
+            material = form.save(commit=False)
+            material.course = course
+            material.save()
+            return redirect('manage_course', course_id=course.id)
+    else:
+        form = MaterialForm()
+
+    return render(request, 'core/manage_course.html', {
         'course': course,
-        # Здесь будет логика для управления курсом, например, добавление материалов
-    }
-    
-    return render(request, 'core/manage_course.html', context)
+        'materials': materials,
+        'enrolled_students': enrolled_students,
+        'form': form,
+    })
 
 def chat_room(request, course_id):
     course = get_object_or_404(Course, pk=course_id)
@@ -249,3 +285,20 @@ def chat_room(request, course_id):
 def documentation(request):
     """Представление для отображения страницы с документацией."""
     return render(request, 'core/documentation.html')
+
+@login_required
+def remove_student(request, course_id, user_id):
+    """
+    Позволяет преподавателю удалить студента из курса.
+    """
+    course = get_object_or_404(Course, id=course_id)
+    student = get_object_or_404(User, id=user_id, is_student=True)
+
+    # Проверка, что текущий пользователь - преподаватель и создатель курса
+    if not request.user.is_teacher or course.teacher != request.user:
+        return redirect('course_detail', course_id=course.id) # Или другая страница с ошибкой
+
+    # Удаление студента из ManyToMany поля
+    course.enrolled_students.remove(student)
+
+    return redirect('manage_course', course_id=course.id)

@@ -1,6 +1,7 @@
 # core/urls.py
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+from . import views
 from .views import (
     UserViewSet,
     StudentViewSet,
@@ -12,6 +13,8 @@ from .views import (
     StudentSearchView,
     TeacherSearchView
 )
+
+
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet)
@@ -26,4 +29,5 @@ urlpatterns = [
     path('', include(router.urls)),
     path('students/search/', StudentSearchView.as_view(), name='student-search'),
     path('teachers/search/', TeacherSearchView.as_view(), name='teacher-search'),
+    path('course/<int:course_id>/remove_student/<int:user_id>/', views.remove_student, name='remove_student'),
 ]

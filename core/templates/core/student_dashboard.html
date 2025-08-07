@@ -4,7 +4,14 @@
 {% block content %}
 <div class="container">
     <h2 class="text-center my-4">Мои курсы</h2>
-    
+    <h3>Мои уведомления:</h3>
+    <ul>
+        {% for notification in notifications %}
+            <li>{{ notification.message }} ({{ notification.created_at|date:"d M Y H:i" }})</li>
+        {% empty %}
+            <li>У вас нет новых уведомлений.</li>
+        {% endfor %}
+    </ul>
     {% if enrolled_courses %}
         <div class="courses-grid">
             {% for course in enrolled_courses %}
@@ -21,6 +28,7 @@
             <p><a href="{% url 'all_courses' %}">Посмотреть все доступные курсы</a></p>
         </div>
     {% endif %}
+    
 
 </div>
 {% endblock %}

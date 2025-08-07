@@ -21,6 +21,7 @@
                     <li><a href="{% url 'teacher_dashboard' %}">Мои курсы</a></li>
                     <li><a href="{% url 'create_course' %}">Создать курс</a></li>
                     {% else %}
+                    <li><a href="/admin/">Админка</a></li>
                     <li><a href="/api/">API</a></li>
                     <li><a href="/docs">Документация</a></li>
                     {% endif %}
