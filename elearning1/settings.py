@@ -42,7 +42,11 @@ SECRET_KEY = 'django-insecure-6!)19$7z^_^tsfqu_e=nl0=o)@ob&5vbga3kf@5@+0)clsu6-&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['elearning-django-app.onrender.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = [
+    'elearning-django-app.onrender.com',
+    '127.0.0.1',
+    'localhost',
+]
 
 AUTH_USER_MODEL = 'core.User'
 
