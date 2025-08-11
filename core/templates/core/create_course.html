@@ -4,7 +4,7 @@
 {% block content %}
 <div class="container">
     <div class="form-container">
-        <h2 class="text-center">Создать новый курс</h2>
+        <h2 class="text-center">Create New Course</h2>
         <form method="post" action="{% url 'create_course' %}">
             {% csrf_token %}
             
@@ -26,7 +26,7 @@
                 </div>
             {% endfor %}
             
-            <button type="submit" class="btn-primary mt-4">Создать курс</button>
+            <button type="submit" class="btn-primary mt-4">Create Course</button>
         </form>
     </div>
 </div>

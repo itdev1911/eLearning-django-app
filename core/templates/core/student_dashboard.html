@@ -3,13 +3,13 @@
 
 {% block content %}
 <div class="container">
-    <h2 class="text-center my-4">Мои курсы</h2>
-    <h3>Мои уведомления:</h3>
+    <h2 class="text-center my-4">My Courses</h2>
+    <h3>My Notifications:</h3>
     <ul>
         {% for notification in notifications %}
             <li>{{ notification.message }} ({{ notification.created_at|date:"d M Y H:i" }})</li>
         {% empty %}
-            <li>У вас нет новых уведомлений.</li>
+            <li>You have no new notifications.</li>
         {% endfor %}
     </ul>
     {% if enrolled_courses %}
@@ -18,17 +18,15 @@
                 <div class="course-card">
                     <h3>{{ course.title }}</h3>
                     <p>{{ course.description|truncatechars:100 }}</p>
-                    <a href="{% url 'course_detail' course.id %}" class="btn-primary">Подробнее</a>
+                    <a href="{% url 'course_detail' course.id %}" class="btn-primary">Learn More</a>
                 </div>
             {% endfor %}
         </div>
     {% else %}
         <div class="alert text-center">
-            <p>Вы пока не записаны ни на один курс.</p>
-            <p><a href="{% url 'all_courses' %}">Посмотреть все доступные курсы</a></p>
+            <p>You are not enrolled in any courses yet.</p>
+            <p><a href="{% url 'all_courses' %}">View all available courses</a></p>
         </div>
     {% endif %}
-    
-
 </div>
 {% endblock %}

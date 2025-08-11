@@ -2,32 +2,32 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1>Документация проекта eLearning</h1>
-    <p class="lead">Краткое описание основных компонентов и функций проекта.</p>
+    <h1>eLearning Project Documentation</h1>
+    <p class="lead">A brief description of the main components and features of the project.</p>
 
     <hr>
 
-    <h2 class="mt-4">1. Модели данных</h2>
-    <p>Описание того, как устроены ваши модели (User, Course, Review и т.д.) и для чего они используются.</p>
+    <h2 class="mt-4">1. Data Models</h2>
+    <p>Description of how your models (User, Course, Review, etc.) are structured and their purposes.</p>
     <ul>
-        <li><b>User:</b> Расширение стандартной модели пользователя, включающей поля is_student и is_teacher.</li>
-        <li><b>Course:</b> Модель для курсов, связанных с преподавателями.</li>
-        <li><b>Review:</b> Модель для отзывов студентов о курсах.</li>
-        <li><b>Material:</b> Учебные материалы, привязанные к курсу.</li>
-        <li><b>StatusUpdate:</b> Модель для обновлений статуса пользователей.</li>
+        <li><b>User:</b> Extension of the standard user model, including fields is_student and is_teacher.</li>
+        <li><b>Course:</b> Model for courses linked to instructors.</li>
+        <li><b>Review:</b> Model for student reviews of courses.</li>
+        <li><b>Material:</b> Educational materials associated with a course.</li>
+        <li><b>StatusUpdate:</b> Model for user status updates.</li>
     </ul>
 
-    <h2 class="mt-4">2. Веб-интерфейс</h2>
-    <p>Список основных страниц и их назначение:</p>
+    <h2 class="mt-4">2. Web Interface</h2>
+    <p>List of main pages and their purposes:</p>
     <ul>
-        <li><b>/</b> - Домашняя страница</li>
-        <li><b>/student/dashboard/</b> - Панель управления студента, отображающая записанные курсы.</li>
-        <li><b>/teacher/dashboard/</b> - Панель управления преподавателя, отображающая созданные курсы.</li>
-        <li><b>/course/&lt;id&gt;/chat/</b> - Страница чата для конкретного курса.</li>
+        <li><b>/</b> - Home page</li>
+        <li><b>/student/dashboard/</b> - Student dashboard showing enrolled courses.</li>
+        <li><b>/teacher/dashboard/</b> - Teacher dashboard showing created courses.</li>
+        <li><b>/course/&lt;id&gt;/chat/</b> - Chat page for a specific course.</li>
     </ul>
 
     <h2 class="mt-4">3. API</h2>
-    <p>Краткое описание вашего REST API на Django REST Framework. Все эндпоинты поддерживают стандартные CRUD-операции (GET, POST, PUT, DELETE).</p>
+    <p>A brief description of your REST API using Django REST Framework. All endpoints support standard CRUD operations (GET, POST, PUT, DELETE).</p>
     <div class="card card-body bg-light">
         <pre><code>{
     "users": "http://127.0.0.1:8000/api/users/",

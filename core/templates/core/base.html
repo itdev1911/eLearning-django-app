@@ -11,34 +11,34 @@
         <nav>
             <span class="logo" style="display:inline-block;position:absolute;font-size:28px;margin-left:20px;top:35px">eLearning</span>
             <ul>
-                <li><a href="{% url 'home' %}">Главная</a></li>
+                <li><a href="{% url 'home' %}">Home</a></li>
 
-                                {% if user.is_authenticated %}
+                {% if user.is_authenticated %}
                     {% if user.is_student %}
-                    <li><a href="{% url 'student_dashboard' %}">Мои курсы</a></li>
-                    <li><a href="{% url 'all_courses' %}">Все курсы</a></li>
+                    <li><a href="{% url 'student_dashboard' %}">My Courses</a></li>
+                    <li><a href="{% url 'all_courses' %}">All Courses</a></li>
                     {% elif user.is_teacher %}
-                    <li><a href="{% url 'teacher_dashboard' %}">Мои курсы</a></li>
-                    <li><a href="{% url 'create_course' %}">Создать курс</a></li>
+                    <li><a href="{% url 'teacher_dashboard' %}">My Courses</a></li>
+                    <li><a href="{% url 'create_course' %}">Create Course</a></li>
                     {% else %}
-                    <li><a href="/admin/">Админка</a></li>
+                    <li><a href="/admin/">Admin Panel</a></li>
                     <li><a href="/api/">API</a></li>
-                    <li><a href="/docs">Документация</a></li>
+                    <li><a href="/docs">Documentation</a></li>
                     {% endif %}
 
-                    <li><a href="{% url 'profile' %}">Профиль</a></li>
+                    <li><a href="{% url 'profile' %}">Profile</a></li>
 
-                                        <li>
+                    <li>
                         <form id="logout-form" method="post" action="{% url 'logout' %}">
                             {% csrf_token %}
-                            <button type="submit" class="btn-link">Выйти</button>
+                            <button type="submit" class="btn-link">Logout</button>
                         </form>
                     </li>
 
-                                {% else %}
-                <li><a href="{% url 'login' %}">Войти</a></li>
-                <li><a href="{% url 'student_signup' %}">Регистрация студента</a></li>
-                <li><a href="{% url 'teacher_signup' %}">Регистрация преподавателя</a></li>
+                {% else %}
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'student_signup' %}">Student Registration</a></li>
+                <li><a href="{% url 'teacher_signup' %}">Teacher Registration</a></li>
                 {% endif %}
             </ul>
         </nav>

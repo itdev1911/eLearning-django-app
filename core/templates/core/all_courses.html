@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="container">
-    <h2 class="text-center my-4">Все доступные курсы</h2>
+    <h2 class="text-center my-4">All Available Courses</h2>
     
     {% if available_courses %}
         <div class="courses-grid">
@@ -11,14 +11,14 @@
                 <div class="course-card">
                     <h3>{{ course.title }}</h3>
                     <p>{{ course.description|truncatechars:100 }}</p>
-                    <p>Преподаватель: {{ course.teacher.username }}</p>
-                    <a href="{% url 'course_detail' course.id %}" class="btn-primary">Подробнее</a>
+                    <p>Instructor: {{ course.teacher.username }}</p>
+                    <a href="{% url 'course_detail' course.id %}" class="btn-primary">Learn More</a>
                 </div>
             {% endfor %}
         </div>
     {% else %}
         <div class="alert text-center">
-            <p>В данный момент доступных курсов нет.</p>
+            <p>There are currently no available courses.</p>
         </div>
     {% endif %}
 

@@ -5,21 +5,21 @@
 <div class="container my-5">
     {% if user.is_authenticated %}
         <div class="text-center">
-            <h1 class="display-4">Добро пожаловать, {{ user.username }}!</h1>
-            <p class="lead">Мы рады вас видеть в нашей системе.</p>
+            <h1 class="display-4">Welcome, {{ user.username }}!</h1>
+            <p class="lead">We’re glad to see you in our system.</p>
         </div>
 
         <div class="row my-5">
             <div class="col-md-6">
                 <div class="card h-100">
                     <div class="card-body">
-                        <h2 class="card-title">Ваши курсы</h2>
+                        <h2 class="card-title">Your Courses</h2>
                         {% if user.is_student %}
-                            <p>Здесь будет отображаться список курсов, на которые вы записаны.</p>
-                            <a href="{% url 'student_dashboard' %}" class="btn-primary">Перейти к курсам</a>
+                            <p>This section will show the list of courses you are enrolled in.</p>
+                            <a href="{% url 'student_dashboard' %}" class="btn-primary">Go to Courses</a>
                         {% elif user.is_teacher %}
-                            <p>Здесь будет отображаться список курсов, которые вы ведете.</p>
-                            <a href="{% url 'teacher_dashboard' %}" class="btn-primary">Перейти к курсам</a>
+                            <p>This section will show the list of courses you teach.</p>
+                            <a href="{% url 'teacher_dashboard' %}" class="btn-primary">Go to Courses</a>
                         {% endif %}
                     </div>
                 </div>
@@ -27,11 +27,11 @@
             <div class="col-md-6">
                 <div class="card h-100">
                     <div class="card-body">
-                        <h2 class="card-title">Обновления</h2>
-                        <p>Здесь будут отображаться уведомления и последние новости.</p>
+                        <h2 class="card-title">Updates</h2>
+                        <p>This section will display notifications and the latest news.</p>
                         <div id="notifications-container">
                             <div class="alert alert-info">
-                                <p>Нет новых уведомлений.</p>
+                                <p>No new notifications.</p>
                             </div>
                         </div>
                     </div>
@@ -41,12 +41,12 @@
 
     {% else %}
         <div class="jumbotron text-center">
-            <h1 class="display-4">Добро пожаловать в eLearning!</h1>
-            <p class="lead">Ваша платформа для онлайн-обучения.</p>
+            <h1 class="display-4">Welcome to eLearning!</h1>
+            <p class="lead">Your platform for online learning.</p>
             <hr class="my-4">
-            <p>Войдите, чтобы получить доступ к вашим курсам или зарегистрируйтесь, чтобы начать.</p>
-            <a href="{% url 'login' %}" class="btn-primary">Войти</a>
-            <a href="{% url 'student_signup' %}" class="btn-primary ml-2">Регистрация</a>
+            <p>Please log in to access your courses or sign up to get started.</p>
+            <a href="{% url 'login' %}" class="btn-primary">Login</a>
+            <a href="{% url 'student_signup' %}" class="btn-primary ml-2">Sign Up</a>
         </div>
     {% endif %}
 
@@ -54,18 +54,18 @@
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Опубликовать</button>
+        <button type="submit">Post</button>
     </form>
-{% endif %}
+    {% endif %}
 
-<h3>Последние обновления:</h3>
-<ul>
-    {% for update in status_updates %}
-        <li><strong>{{ update.user.username }}:</strong> {{ update.content }} ({{ update.created_at|date:"d M Y H:i" }})</li>
-    {% empty %}
-        <li>Пока нет обновлений.</li>
-    {% endfor %}
-</ul>
+    <h3>Latest Updates:</h3>
+    <ul>
+        {% for update in status_updates %}
+            <li><strong>{{ update.user.username }}:</strong> {{ update.content }} ({{ update.created_at|date:"d M Y H:i" }})</li>
+        {% empty %}
+            <li>No updates yet.</li>
+        {% endfor %}
+    </ul>
 </div>
 
 <script src="{% static 'core/js/main.js' %}"></script>

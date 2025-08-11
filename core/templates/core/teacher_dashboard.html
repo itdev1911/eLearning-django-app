@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="container">
-    <h2 class="text-center my-4">Курсы, которые я веду</h2>
+    <h2 class="text-center my-4">Courses I Teach</h2>
     
     {% if teaching_courses %}
         <div class="courses-grid">
@@ -11,14 +11,14 @@
                 <div class="course-card">
                     <h3>{{ course.title }}</h3>
                     <p>{{ course.description|truncatechars:100 }}</p>
-                    <a href="{% url 'course_detail' course.id %}" class="btn-primary">Управление курсом</a>
+                    <a href="{% url 'course_detail' course.id %}" class="btn-primary">Manage Course</a>
                 </div>
             {% endfor %}
         </div>
     {% else %}
         <div class="alert text-center">
-            <p>Вы еще не создали ни одного курса.</p>
-            <p><a href="{% url 'create_course' %}" class="btn-primary">Создать свой первый курс</a></p>
+            <p>You have not created any courses yet.</p>
+            <p><a href="{% url 'create_course' %}" class="btn-primary">Create Your First Course</a></p>
         </div>
     {% endif %}
 

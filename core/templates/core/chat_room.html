@@ -3,12 +3,12 @@
 {% block content %}
 <div class="container my-5">
     <div class="chat-container">
-        <h2>Чат для курса "{{ course.title }}"</h2>
+        <h2>Chat for course "{{ course.title }}"</h2>
         <div id="chat-log">
             </div>
         <div class="chat-input-area">
             <input type="text" id="chat-message-input" class="form-control">
-            <button id="chat-message-submit" class="btn btn-primary">Отправить</button>
+            <button id="chat-message-submit" class="btn btn-primary">Send</button>
         </div>
     </div>
 </div>
@@ -16,7 +16,7 @@
 
 {% block extra_js %}
 <script>
-    // Весь код запускается только после полной загрузки HTML-документа
+    // All code runs only after the full HTML document is loaded
     document.addEventListener('DOMContentLoaded', function() {
         const roomName = "{{ course.id }}";
         const chatLog = document.getElementById('chat-log');
@@ -25,17 +25,17 @@
 
         console.log("Attempting to connect to WebSocket...");
 
-        // Явно указываем хост и порт для WebSocket-соединения
+        // Explicitly specify host and port for the WebSocket connection
         const chatSocket = new WebSocket(
             'ws://' + window.location.hostname + ':8001' + '/ws/chat/' + roomName + '/'
         );
         
-        // Логируем успешное открытие соединения
+        // Log successful connection opening
         chatSocket.onopen = function(e) {
             console.log("WebSocket connection opened successfully.");
         };
 
-        // Обработка входящих сообщений от сервера
+        // Handle incoming messages from the server
         chatSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
             const message = data.message;
@@ -47,17 +47,17 @@
             console.log("Message received from server: " + message);
         };
 
-        // Логирование закрытия соединения
+        // Log connection close
         chatSocket.onclose = function(e) {
             console.error('Chat socket closed unexpectedly');
         };
 
-        // Логирование ошибок соединения
+        // Log connection errors
         chatSocket.onerror = function(e) {
             console.error('WebSocket error occurred:', e);
         };
 
-        // Обработка нажатия клавиши Enter
+        // Handle Enter key press
         if (messageInputDom) {
             messageInputDom.focus();
             messageInputDom.onkeyup = function(e) {
@@ -67,13 +67,13 @@
             };
         }
 
-        // Обработка нажатия кнопки "Отправить"
+        // Handle "Send" button click
         if (messageSubmitBtn) {
             messageSubmitBtn.onclick = function(e) {
                 const message = messageInputDom.value;
 
                 if (message.trim() !== '') {
-                    // Проверяем, что соединение открыто (readyState === 1) перед отправкой
+                    // Check that the connection is open (readyState === 1) before sending
                     if (chatSocket.readyState === WebSocket.OPEN) {
                         chatSocket.send(JSON.stringify({
                             'message': message
